@@ -224,5 +224,7 @@ CludoSession.prototype = {
 var cludoSession;
 (function() {
     cludoSession = new CludoSession();
+    const arr = [1,2,3];
+    arr.forEach( (val) => console.log(this, val));
     // cludoSession.init();
 })();
