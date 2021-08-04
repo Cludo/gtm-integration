@@ -89,32 +89,44 @@ CludoSession.prototype = {
         return uuid;
     },
 
+    createNewSession: function(storageContainer) {
+        //Create new session
+        var currentSessionId = this.generateUUID();
+
+        //Store in container
+        storageContainer.setItem(this.sessionIdKey, currentSessionId);
+
+        //Update sliding expiration
+        storageContainer.setItem(this.sessionIdStartKey, new Date());
+    },
+
     /** Stores a trait in whatever storage we are using
-     * @param trait a key/value pair, where the key is the trait's name
+     * @param traits table data passed by GTM representing user traits
      */
-    storeUserTrait: function(trait) {
+    storeUserTraits: function(traits) {
         var storageContainer = this.getStorageContainer();
         var currentSessionId = storageContainer.getItem(this.sessionIdKey);
         var currentSessionStart = storageContainer.getItem(this.sessionIdStartKey);
 
         if (!currentSessionId || this.sessionExpired(currentSessionStart)) {
-            //Create new session
-            currentSessionId = this.generateUUID();
-
-            //Store in container
-            storageContainer.setItem(this.sessionIdKey, currentSessionId);
-
+            this.createNewSession(storageContainer);
         }
 
-        var currentTraits = storageContainer.getItem('cludoGtmTraits');
+        var currentTraits = storageContainer.getItem('cludo-traits');
         if (!currentTraits) { 
-            currentTraits = {};
+            currentTraits = [];
         } else {
             currentTraits = JSON.parse(currentTraits);
         }
-        currentTraits[trait.key] = trait.value;
+
+        for (var i = 0; i < traits.length; i++) {
+            var trait = traits[i].traitValue;
+            if (currentTraits.indexOf(trait) === -1) {
+                currentTraits.push(trait);
+            }
+        }
         currentTraits = JSON.stringify(currentTraits);
-        storageContainer.setItem('cludoGtmTraits', currentTraits);
+        storageContainer.setItem('cludo-traits', currentTraits);
     }
 
 };
