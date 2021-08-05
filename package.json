@@ -4,9 +4,7 @@
   "description": "",
   "main": "src/cludo-gtm.js",
   "scripts": {
-    "compile": "npx babel src --no-comments --out-dir lib",
-    "browserify": "browserify lib/cludo-gtm.js -o lib/cludo-gtm.js",
-    "build": "npm run compile && npm run browserify && terser lib/cludo-gtm.js -c -m -o lib/cludo-gtm.min.js"
+    "minify": "mkdir build && terser src/cludo-gtm.js -c -m -o build/cludo-gtm.min.js"
   },
   "repository": {
     "type": "git",
@@ -19,13 +17,6 @@
   },
   "homepage": "https://github.com/Cludo/gtm-integration#readme",
   "devDependencies": {
-    "@babel/cli": "^7.14.8",
-    "@babel/core": "^7.14.8",
-    "@babel/preset-env": "^7.14.9",
-    "browserify": "^17.0.0",
     "terser": "^5.7.1"
-  },
-  "dependencies": {
-    "core-js": "^3.16.0"
   }
 }
