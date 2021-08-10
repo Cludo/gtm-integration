@@ -6,6 +6,7 @@
   "version": 1,
   "securityGroups": [],
   "displayName": "Cludo Trait Personalization",
+  "categories": ["PERSONALIZATION", "EXPERIMENTATION", "ANALYTICS"],
   "brand": {
     "id": "brand_dummy",
     "displayName": "",
