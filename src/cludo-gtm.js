@@ -1,13 +1,14 @@
-function CludoSession() {
+class CludoSession {
 
-    this.sessionIdKey = "cludoSessionId";
-    this.sessionIdStartKey = "cludoSessionIdStart";
-    this.sessionExpiration = 1800000; //30 minutes
+    cludoTraitKey = "cludoTraits"
+    sessionIdKey = "cludoSessionId";
+    sessionIdStartKey = "cludoSessionIdStart";
+    sessionExpiration = 1800000; //30 minutes
 
     /**
      * Mimic localStorage to be able unify handling of session parameters
      */
-    this.memoryStorageContainer = {
+    memoryStorageContainer = {
         storage: {},
         getItem: function (key) {
             return this.storage[key];
@@ -26,20 +27,16 @@ function CludoSession() {
         }
     };
 
-    this.cachedStorageContainerReference = null;
-}
+    cachedStorageContainerReference = null;
 
-CludoSession.prototype = {
-    constructor: CludoSession,
-
-    sessionExpired: function(startTime) {
+    sessionExpired(startTime) {
         if (!startTime)
             return true;
 
         return (Math.abs(new Date() - Date.parse(startTime) > this.sessionExpiration));
-    },
+    }
 
-    storageContainerSupported: function(storageContainer) {
+    storageContainerSupported(storageContainer) {
         var mod = "cludojs";
 
         try {
@@ -49,13 +46,13 @@ CludoSession.prototype = {
         } catch (e) {
             return false;
         }
-    },
+    }
 
     /**
      * Returns a storage container depending on client constraints. Be sure to only call
      * storage container interface methods when working with these objects
      */
-    getStorageContainer: function() {
+    getStorageContainer() {
         if (this.cachedStorageContainerReference !== null) {
             return this.cachedStorageContainerReference;
         }
@@ -74,9 +71,9 @@ CludoSession.prototype = {
             return this.memoryStorageContainer;
         }
         
-    },
+    }
 
-    generateUUID: function() {
+    generateUUID() {
         var d = new Date().getTime();
         if (window.performance && typeof window.performance.now === "function") {
             d += performance.now();     // use high-precision timer if available
@@ -87,9 +84,9 @@ CludoSession.prototype = {
             return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
         });
         return uuid;
-    },
+    }
 
-    createNewSession: function(storageContainer) {
+    createNewSession(storageContainer) {
         //Create new session
         var currentSessionId = this.generateUUID();
 
@@ -98,12 +95,12 @@ CludoSession.prototype = {
 
         //Update sliding expiration
         storageContainer.setItem(this.sessionIdStartKey, new Date());
-    },
+    }
 
     /** Stores a trait in whatever storage we are using
      * @param traits table data passed by GTM representing user traits
      */
-    storeUserTraits: function(traits) {
+    storeUserTraits(traits) {
         var storageContainer = this.getStorageContainer();
         var currentSessionId = storageContainer.getItem(this.sessionIdKey);
         var currentSessionStart = storageContainer.getItem(this.sessionIdStartKey);
@@ -112,7 +109,7 @@ CludoSession.prototype = {
             this.createNewSession(storageContainer);
         }
 
-        var currentTraits = storageContainer.getItem('cludo-traits');
+        var currentTraits = storageContainer.getItem(this.cludoTraitKey);
         if (!currentTraits) { 
             currentTraits = [];
         } else {
@@ -126,14 +123,9 @@ CludoSession.prototype = {
             }
         }
         currentTraits = JSON.stringify(currentTraits);
-        storageContainer.setItem('cludo-traits', currentTraits);
+        storageContainer.setItem(this.cludoTraitKey, currentTraits);
     }
 
-};
+}
 
-
-// create a global
-var cludoSession;
-(function() {
-    cludoSession = new CludoSession();
-})();
+export default new CludoSession();
