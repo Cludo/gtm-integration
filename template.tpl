@@ -101,7 +101,7 @@ switch (data.eventType) {
   // Trait is used to store user traits to storage where CludoJS can find them 
   case 'trait': {
     log('Event Type: trait');
-    if (!copyFromWindow('cludoSession.storeUserTrait')) {
+    if (!copyFromWindow('cludoSession.storeUserTraits')) {
       log('The Cludo Tag needs to be initialized before traits can be stored');
       data.gtmOnFailure();
     }
