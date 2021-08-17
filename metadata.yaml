@@ -1,0 +1,5 @@
+homepage: "https://www.cludo.com"
+documentation: "https://cludohelp.force.com/helpcenter/s/"
+versions:
+  - sha: 7dd0cf862acaf2c9eda622f322de5710abe98cd7
+    changeNotes: Initial release.
