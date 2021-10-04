@@ -94,7 +94,7 @@ switch (data.eventType) {
   // Init loads the helper script for accessing storage
   case 'init': {
     log('Event Type: init');
-    injectScript('https://customer.cludo.local/assets/2557/gtm/res/cludo-gtm-script.js', data.gtmOnSuccess, data.gtmOnFailure);
+    injectScript('https://customer.cludo.com/scripts/beta/gtm/cludo-gtm-script.js', data.gtmOnSuccess, data.gtmOnFailure);
     break;
   }
  
@@ -219,7 +219,7 @@ ___WEB_PERMISSIONS___
             "listItem": [
               {
                 "type": 1,
-                "string": "https://customer.cludo.local/assets/2557/gtm/res/cludo-gtm-script.js"
+                "string": "https://customer.cludo.com/scripts/beta/gtm/cludo-gtm-script.js"
               }
             ]
           }
