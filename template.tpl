@@ -14,6 +14,7 @@ ___INFO___
   "version": 1,
   "securityGroups": [],
   "displayName": "Cludo Search",
+  "categories": ["PERSONALIZATION", "EXPERIMENTATION", "ANALYTICS"],
   "brand": {
     "id": "brand_dummy",
     "displayName": "",
