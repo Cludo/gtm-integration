@@ -93,23 +93,32 @@ ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
 const log = require('logToConsole');
 const copyFromWindow = require('copyFromWindow');
+const createQueue = require('createQueue');
 const callInWindow = require('callInWindow');
 const injectScript = require('injectScript');
 const makeString = require('makeString');
+
+// Create queue and push function
+const traitQueuePush = createQueue('traitQueue');
 
 switch (data.eventType) {
     
   case 'init': {
     log('Event Type: init');
-    injectScript('https://customer.cludo.com/scripts/beta/gtm/cludo-gtm-script.js', data.gtmOnSuccess, data.gtmOnFailure);
+    injectScript('https://customer.cludo.com/scripts/beta/gtm/cludo-gtm-script.js', scriptInjectSuccess, data.gtmOnFailure);
     break;
   }
  
   case 'trait': {
     log('Event Type: trait');
     if (!copyFromWindow('cludoSession.storeUserTraits')) {
-      log('The Cludo Search Tag needs to be initialized before traits can be stored');
-      data.gtmOnFailure();
+      if (copyFromWindow('traitQueue')) {
+        log('Script not yet loaded, pushing traits to the queue');
+        traitQueuePush(data.traits);
+      } else {
+        log('The Cludo Search Tag needs to be initialized before traits can be stored');
+        data.gtmOnFailure();
+      }
     }
     
     if (data.traits) {
@@ -123,6 +132,22 @@ switch (data.eventType) {
     break;
   }
     
+}
+
+// Take the values stored in 'traitQueue' and push them once the script is loaded
+function pushTraitsFromQueue() {
+  const traits = copyFromWindow('traitQueue');
+  traits.forEach( function (trait) {
+    callInWindow('cludoSession.storeUserTraits', trait);
+  });
+}
+
+function scriptInjectSuccess() {
+  if (copyFromWindow('traitQueue')) {
+    pushTraitsFromQueue();
+  }
+  
+  data.gtmOnSuccess();
 }
 
 
@@ -198,6 +223,45 @@ ___WEB_PERMISSIONS___
                   {
                     "type": 8,
                     "boolean": true
+                  }
+                ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "key"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  },
+                  {
+                    "type": 1,
+                    "string": "execute"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "traitQueue"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
                   }
                 ]
               }
