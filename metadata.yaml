@@ -1,5 +1,7 @@
 homepage: "https://www.cludo.com"
 documentation: "https://cludohelp.force.com/helpcenter/s/"
 versions:
+  - sha: e0aa422fa1d9995e7110db109dbf087d8ef7016e,
+    changeNotes: Fix race condition for adding traits on page view/load
   - sha: cb22ec9a46dfd66fc1857fc9a49f7c42830e6264
     changeNotes: Initial release.
